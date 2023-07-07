@@ -1,14 +1,14 @@
 import { Text, View, Pressable, StyleSheet } from "react-native";
 
-function PrimaryButton(props) {
+function PrimaryButton({ children, onPress }) {
   return (
     <View style={styles.buttonView}>
       <Pressable
         style={styles.buttonContainer}
         android_ripple={{ color: "0EA293" }}
-        onPress={props.onPress}
+        onPress={onPress}
       >
-        <Text style={styles.buttonText}>{props.children}</Text>
+        <Text style={styles.buttonText}>{children}</Text>
       </Pressable>
     </View>
   );
