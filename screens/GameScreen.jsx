@@ -1,13 +1,64 @@
-import { Text, View, StyleSheet } from "react-native";
+import { Text, View, StyleSheet, Alert } from "react-native";
 import Title from "../components/Title";
-function GameScreen() {
+import { useState } from "react";
+import NumberContainer from "../components/game/NumberContainer";
+import PrimaryButton from "../components/PrimaryButton";
+
+function generateRandomBetween(min, max, exclude) {
+  const rndNum = Math.floor(Math.random() * (max - min)) + min;
+
+  if (rndNum === exclude) {
+    return generateRandomBetween(min, max, exclude);
+  } else {
+    return rndNum;
+  }
+}
+
+let minBoundary = 1;
+let maxBoundary = 100;
+
+function GameScreen({ userNumber }) {
+  const initialGuess = generateRandomBetween(
+    minBoundary,
+    maxBoundary,
+    userNumber
+  );
+
+  function nextGuessHandler(direction) {
+    if (
+      (direction === "lower" && currentGuess < userNumber) ||
+      (direction === "greater" && currentGuess > userNumber)
+    ) {
+      return;
+    }
+
+    if (direction === "lower") {
+      maxBoundary = currentGuess;
+    } else {
+      minBoundary = currentGuess + 1;
+    }
+    const newRndNumber = generateRandomBetween(
+      minBoundary,
+      maxBoundary,
+      currentGuess
+    );
+    setCurrentguess(newRndNumber);
+  }
+
+  const [currentGuess, setCurrentguess] = useState(initialGuess);
   return (
     <View style={styles.screen}>
       <Title>Opponent's Guess</Title>
-      {/*guess*/}
+      <NumberContainer>{currentGuess}</NumberContainer>
       <View>
-        <Text>high or lower</Text>
-        {/*+ -*/}
+        <View style={styles.buttonsContainer}>
+          <PrimaryButton onPress={nextGuessHandler.bind(this, "lower")}>
+            -
+          </PrimaryButton>
+          <PrimaryButton onPress={nextGuessHandler.bind(this, "greater")}>
+            +
+          </PrimaryButton>
+        </View>
       </View>
     </View>
   );
@@ -19,5 +70,10 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
     padding: 36,
+  },
+  buttonsContainer: {
+    marginTop: 10,
+    flexDirection: "row",
+    justifyContent: "center",
   },
 });
